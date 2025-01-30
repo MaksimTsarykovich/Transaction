@@ -1,7 +1,10 @@
 <?php
 
-use App\DB;
-use Couchbase\View;
+declare(strict_types=1);
+
+namespace App;
+
+use App\Exceptions\RouterNotFoundException;
 
 class App
 {

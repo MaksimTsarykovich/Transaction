@@ -7,7 +7,6 @@ namespace App;
 class Config
 {
     protected array $config;
-
     public function __construct(array $env)
     {
         $this->config = [
@@ -20,10 +19,9 @@ class Config
             ],
         ];
     }
-
+    
     public function __get(string $name)
     {
         return $this->config[$name] ?? null;
     }
-
 }
