@@ -4,7 +4,7 @@ services:
     container_name: transaction-php
     restart: always
     volumes:
-      - ../:/var/www/html
+      - ../src:/var/www/html
     ports:
       - "9000:9000"
     networks:
@@ -16,7 +16,7 @@ services:
     ports:
       - "8000:80"
     volumes:
-      - ../:/var/www/html
+      - ../src:/var/www/html
       - ./nginx:/etc/nginx/conf.d
     depends_on:
       - php
@@ -30,6 +30,9 @@ services:
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: app
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
     ports:
       - "3306:3306"
     networks:
