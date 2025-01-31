@@ -12,7 +12,7 @@ class TransactionController
 {
     public function transactions(): View
     {
-        $transactions = (new TransactionModel(App::db()))->getAllTransactionFromCvs('transactions_sample.csv');
+        $transactions = (new TransactionModel(App::db()))->getAllTransactionFromCvs(STORAGE_PATH.'/transactions_sample.csv');
         return View::make('transactions', $transactions);
     }
 }

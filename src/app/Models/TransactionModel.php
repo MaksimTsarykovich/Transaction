@@ -44,10 +44,10 @@ class TransactionModel extends Model
         $stmt = $this->db->prepare("INSERT INTO `transactions`(`data`, `check`, `description`, `amount`) VALUES (:data, :check, :description, :amount)");
         foreach ($this->extractCsvData($fileName) as $row) {
             $stmt->execute([
-                ':data' => $row['data'],
-                ':check' => $row['check'],
-                ':description' => $row['description'],
-                ':amount' => $row['amount'],
+                ':data' => $row['Date'],
+                ':check' => $row['Check #'],
+                ':description' => $row['Description'],
+                ':amount' => $row['Amount'],
             ]);
         }
     }
