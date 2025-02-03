@@ -58,4 +58,14 @@ class View
         include $viewPath;
         return (string) ob_get_clean();
     }
+
+    public function __toString(): string
+    {
+        return $this->render();
+    }
+
+    public function __get(string $key)
+    {
+        return $this->params[$key] ?? null;
+    }
 }
