@@ -13,14 +13,9 @@ class TransactionController
     public function transactions(): View
     {
         $transactions [] = (new TransactionModel(App::db()))
-            ->getAllTransactionFromCvs(STORAGE_PATH . '/transactions_sample.csv')
-            ->toArray();
-
-        echo '<pre>';
-        print_r($transactions);
-        echo '</pre>';
-
-        return View::make('transactions', $transactions);
+                ->getAllTransactionFromCvs(STORAGE_PATH . '/transactions_sample.csv')
+                ->toArray();
+        return View::make('transactions', $transactions[0]);
     }
 
 }

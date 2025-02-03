@@ -21,6 +21,14 @@
         tfoot tr th {
             text-align: right;
         }
+
+        green {
+            color: green;
+        }
+
+        red {
+            color: red;
+        }
     </style>
 </head>
 <body>
@@ -34,28 +42,32 @@
     </tr>
     </thead>
     <tbody>
-    <?php foreach ($this->params as $invoice): ?>
+
+
+    <?php foreach ($this->params['transactions'] as $transaction): ?>
         <tr>
-            <td><?= $invoice['data'] ?></td>
-            <td><?= $invoice['check'] ?></td>
-            <td><?= $invoice['description'] ?></td>
-            <td><?= $invoice['amount'] ?></td>
+            <td><?= $transaction['data'] ?></td>
+            <td><?= $transaction['check'] ?></td>
+            <td><?= $transaction['description'] ?></td>
+            <td ><?= $transaction['amount'] ?></td>
+            <td ><?= $transaction['is_positive'] ?></td>
         </tr>
     <?php endforeach; ?>
 
     </tbody>
     <tfoot>
+
     <tr>
         <th colspan="3">Total Income:</th>
-        <td><!-- TODO --></td>
+        <td><?=$this->params['income']?></td>
     </tr>
     <tr>
         <th colspan="3">Total Expense:</th>
-        <td><!-- TODO --></td>
+        <td><?=$this->params['expense']?></td>
     </tr>
     <tr>
         <th colspan="3">Net Total:</th>
-        <td><!-- TODO --></td>
+        <td><?=$this->params['net']?></td>
     </tr>
     </tfoot>
 </table>

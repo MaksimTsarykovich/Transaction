@@ -6,12 +6,16 @@ namespace App\Models;
 
 use App\Model;
 use App\DB;
+use Exception;
+use Generator;
+use PDOStatement;
 
 class TransactionModel extends Model
 {
     protected ?string $income;
     protected ?string $net;
     protected ?string $expense;
+    protected ?int $isPositive;
     protected array $transactions = [];
 
     public function __construct(DB $db)
@@ -33,21 +37,23 @@ class TransactionModel extends Model
     {
         $stmt = $this->db->prepare("SELECT * FROM `transactions`");
         $stmt->execute();
-        $this->transactions = array_map([$this, 'formatAmountToFloat'], $stmt->fetchAll());
+        $transactions = $stmt->fetchAll();
+
+        $this->transactions = array_map([$this, 'formatAmountToFloat'], $transactions);
 
         return $this;
     }
 
-    protected function extractCsvData($fileName): \Generator
+    protected function extractCsvData($fileName): Generator
     {
         $handle = fopen($fileName, 'r');
-        $headers = fgetcsv($handle, null, ",");
+        $headers = fgetcsv($handle);
 
-        while (($data = fgetcsv($handle, null, ",")) !== false) {
+        while (($data = fgetcsv($handle)) !== false) {
             $rowData = array_combine($headers, $data);
-            $rowData['Amount'] = $this->formatAmountToInt($rowData['Amount']);
             yield $rowData;
         }
+
         fclose($handle);
     }
 
@@ -57,27 +63,37 @@ class TransactionModel extends Model
         try {
             $this->db->beginTransaction();
             foreach ($this->extractCsvData($fileName) as $row) {
+                $row = $this->formatTransactionAmount($row);
                 $this->insertRow($stmt, $row);
             }
             $this->db->commit();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
+            echo $e->getMessage();
             $this->db->rollBack();
-
         }
     }
 
-    protected function prepareInsertStatement(): \PDOStatement|bool
+
+    protected function formatTransactionAmount(array $row): array
     {
-        return $this->db->prepare("INSERT INTO `transactions`(`data`, `check`, `description`, `amount`) VALUES (:data, :check, :description, :amount)");
+        $row['Amount'] = $this->formatAmountToInt($row['Amount']);
+        $row['is_positive'] = $row['Amount'] > 0;
+        return $row;
     }
 
-    protected function insertRow($stmt, $row): \PDOStatement|bool
+    protected function prepareInsertStatement(): PDOStatement|bool
+    {
+        return $this->db->prepare("INSERT INTO `transactions`(`data`, `check`, `description`, `amount`, `is_positive`) VALUES (:data, :check, :description, :amount, :is_positive)");
+    }
+
+    protected function insertRow($stmt, $row): PDOStatement|bool
     {
         return $stmt->execute([
             ':data' => $row['Date'],
             ':check' => $row['Check #'],
             ':description' => $row['Description'],
             ':amount' => $row['Amount'],
+            ':is_positive' => $row['is_positive'],
         ]);
     }
 
@@ -86,10 +102,13 @@ class TransactionModel extends Model
         return str_replace(['$', ',', '.'], '', $value);
     }
 
-    protected function formatAmountToFloat(array|string $transactions): string
+    protected function formatAmountToFloat(array|string $value): array|string
     {
-        is_array($transactions) ? $amount = $transactions['amount'] : $amount = $transactions;
-        return '$' . number_format($amount / 100, 2, '.', ',');
+        if (is_array($value)) {
+            $value['amount'] = number_format($value['amount'] / 100, 2);
+            return $value;
+        }
+        return number_format($value / 100, 2);
     }
 
     protected function calculateNet(): TransactionModel
