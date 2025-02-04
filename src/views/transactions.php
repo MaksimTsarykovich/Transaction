@@ -22,11 +22,11 @@
             text-align: right;
         }
 
-        green {
+        .positive {
             color: green;
         }
 
-        red {
+        .negative {
             color: red;
         }
     </style>
@@ -49,8 +49,9 @@
             <td><?= $transaction['data'] ?></td>
             <td><?= $transaction['check'] ?></td>
             <td><?= $transaction['description'] ?></td>
-            <td ><?= $transaction['amount'] ?></td>
-            <td ><?= $transaction['is_positive'] ?></td>
+            <td class="<?= $transaction['is_positive'] ? 'positive': 'negative' ?>">
+                <?= $transaction['amount'] ?>
+            </td>
         </tr>
     <?php endforeach; ?>
 

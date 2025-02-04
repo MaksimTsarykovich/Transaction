@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App;
 
 use App\Exceptions\RouterNotFoundException;
+use App\Database\DB;
 
 class App
 {
