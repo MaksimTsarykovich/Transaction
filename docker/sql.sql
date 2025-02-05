@@ -16,7 +16,7 @@ ALTER TABLE transactions
     MODIFY description VARCHAR(255) UNIQUE;
 
 ALTER TABLE transactions
-    MODIFY `check` VARCHAR(255);
+    CHANGE  `data` `date` VARCHAR(255);
 
 INSERT INTO `transactions`(`data`, `check`, `description`, `amount`, `is_positive`)
 VALUES ('11', '222', '333', 12, false);
