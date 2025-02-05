@@ -3,7 +3,8 @@
 namespace App\Database;
 
 
-
+use App\Models\TransactionModel;
+use PDOException;
 
 class QueryBuilder
 {
@@ -24,25 +25,35 @@ class QueryBuilder
 
     public function insert($table, $data): void
     {
-        $sql = "INSERT INTO `$table`(`data`, `check`, `description`, `amount`, `is_positive`) VALUES (:data, :check, :description, :amount, :is_positive)";
-        if($this->isRowExist($data['Description'])) return;
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute([
-            ':data' => $data['Date'],
-            ':check' => $data['Check #'],
-            ':description' => $data['Description'],
-            ':amount' => $data['Amount'],
-            ':is_positive' => $data['is_positive'],
-        ]);
+        $keys = '`'.implode('`, `', array_keys($data)) . '`';
+        $tags = ':' . implode(', :', array_keys($data));
+        $sql = "INSERT INTO `{$table}` ({$keys}) VALUES ({$tags})";
+
+        if ($this->isRowExist($data['description'])) {
+            return;
+        }
+
+        try {
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute($data);
+        } catch (PDOException $e) {
+            echo 'Error: ' . $e->getMessage();
+        }
     }
 
     protected function isRowExist($description): bool
     {
-        $sql = "SELECT `description` FROM `transactions` WHERE `description` = :description";
+        $sql = "SELECT COUNT(*) FROM `transactions` WHERE `description` = :description";
         $stmt = $this->db->prepare($sql);
-        return $stmt->execute([':description' => $description]);
-    }
+        try {
 
+            $stmt->execute(['description' => $description]);
+        } catch (PDOException $e) {
+            echo 'Error: ' . $e->getMessage();
+        }
+
+        return $stmt->fetchColumn() > 0;
+    }
 
 
 }

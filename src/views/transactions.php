@@ -46,7 +46,7 @@
 
     <?php foreach ($this->params['transactions'] as $transaction): ?>
         <tr>
-            <td><?= $transaction['data'] ?></td>
+            <td><?= $transaction['date'] ?></td>
             <td><?= $transaction['check'] ?></td>
             <td><?= $transaction['description'] ?></td>
             <td class="<?= $transaction['is_positive'] ? 'positive': 'negative' ?>">

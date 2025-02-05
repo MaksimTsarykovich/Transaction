@@ -24,6 +24,14 @@ class TransactionModel extends Model
         $this->queryBuilder = new QueryBuilder($db);
     }
 
+    public static function dd( $data): void
+    {
+        echo '<pre>';
+        print_r($data);
+        echo '<pre>';
+
+    }
+
     public function getAllTransactionFromCvs(string $fileName): TransactionModel
     {
         $this->insertCsvRowsToDatabase($fileName);
@@ -61,7 +69,7 @@ class TransactionModel extends Model
         try {
             $this->db->beginTransaction();
             foreach ($this->extractCsvData($fileName) as $row) {
-                $row = $this->formatTransactionAmount($row);
+                $row = $this->formatTransaction($row);
                 $this->queryBuilder->insert('transactions', $row);
             }
             $this->db->commit();
@@ -72,20 +80,42 @@ class TransactionModel extends Model
     }
 
 
-    protected function formatTransactionAmount(array $row): array
+    protected function formatTransaction(array $row): array
     {
-        $row['Amount'] = $this->formatAmountToInt($row['Amount']);
-        $row['Amount'] > 0 ? $row['is_positive'] = 1 : $row['is_positive'] = 0;
+        $row = $this->toLowerCaseKeys($row);
+
+        $row = $this->removeSpacesAndSpecialChars($row);
+
+        $row['amount'] = $this->cleanNumericValue($row['amount']);
+        $row = $this->createFlagIsPositive($row);
         return $row;
     }
 
-    protected function formatAmountToInt($value): int
+    protected function createFlagIsPositive($row)
+    {
+        $row['is_positive'] = $row['amount'] > 0 ? 1 : 0;
+        return $row;
+
+    }
+
+    protected function removeSpacesAndSpecialChars(array $row): array
+    {
+        $formatKey = str_replace([' ','#'], '', array_keys($row));
+        return array_combine($formatKey, array_values($row));
+    }
+
+    protected function toLowerCaseKeys(array $row): array
+    {
+        return array_change_key_case($row, CASE_LOWER);
+    }
+
+    protected function cleanNumericValue($value): int
     {
         $value = str_replace(['$', ',', '.'], '', $value);
         return (int)$value;
     }
 
-    protected function formatAmountToString(array|string $value): array|string
+    protected function formatAmountToString(array|string|null $value): array|string
     {
         if (is_array($value)) {
             $value['amount'] = number_format($value['amount'] / 100, 2);
