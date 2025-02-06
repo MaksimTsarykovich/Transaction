@@ -24,7 +24,7 @@ class TransactionModel extends Model
         $this->queryBuilder = new QueryBuilder($db);
     }
 
-    public static function dd( $data): void
+    public static function dd($data): void
     {
         echo '<pre>';
         print_r($data);
@@ -86,8 +86,19 @@ class TransactionModel extends Model
 
         $row = $this->removeSpacesAndSpecialChars($row);
 
+        $row = $this->formatDate($row);
+
         $row['amount'] = $this->cleanNumericValue($row['amount']);
         $row = $this->createFlagIsPositive($row);
+        return $row;
+    }
+
+
+    protected function formatDate(array $row): array
+    {
+        $date = explode('/', $row['date']);
+        $europeDateFormat = "{year}-{month}-{day}";
+        $row['date'] = str_replace(['{month}', '{day}', '{year}'], $date, $europeDateFormat);
         return $row;
     }
 
@@ -100,7 +111,7 @@ class TransactionModel extends Model
 
     protected function removeSpacesAndSpecialChars(array $row): array
     {
-        $formatKey = str_replace([' ','#'], '', array_keys($row));
+        $formatKey = str_replace([' ', '#'], '', array_keys($row));
         return array_combine($formatKey, array_values($row));
     }
 
