@@ -25,7 +25,7 @@ services:
 
 
   db:
-    image: mysql:latest
+    build: ./mysql/
     container_name: transaction-db
     restart: always
     environment:
@@ -35,6 +35,8 @@ services:
       MYSQL_PASSWORD: password
     ports:
       - "3306:3306"
+    volumes:
+          - db_data:/var/lib/mysql
     networks:
       - app-network
 
@@ -51,6 +53,10 @@ services:
       - db
     networks:
       - app-network
+
+volumes:
+  db_data:
+
 
 networks:
   app-network:
