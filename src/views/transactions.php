@@ -49,7 +49,7 @@
             <td><?= $transaction['date'] ?></td>
             <td><?= $transaction['check'] ?></td>
             <td><?= $transaction['description'] ?></td>
-            <td class="<?= $transaction['is_positive'] ? 'positive': 'negative' ?>">
+            <td class="<?= $transaction['is_positive'] ? 'positive' : 'negative' ?>">
                 <?= $transaction['amount'] ?>
             </td>
         </tr>
@@ -60,15 +60,15 @@
 
     <tr>
         <th colspan="3">Total Income:</th>
-        <td><?=$this->params['income']?></td>
+        <td><?= $this->params['income'] ?></td>
     </tr>
     <tr>
         <th colspan="3">Total Expense:</th>
-        <td><?=$this->params['expense']?></td>
+        <td><?= $this->params['expense'] ?></td>
     </tr>
     <tr>
         <th colspan="3">Net Total:</th>
-        <td><?=$this->params['net']?></td>
+        <td><?= $this->params['net'] ?></td>
     </tr>
     </tfoot>
 </table>

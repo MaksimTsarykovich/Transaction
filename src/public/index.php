@@ -20,8 +20,9 @@ $router = new Router();
 
 $router
     ->get('/', [HomeController::class, 'index'])
-    ->get('/transactions', [TransactionController::class, 'transactions']);
-    
+    ->get('/transactions', [TransactionController::class, 'transactions'])
+    ->post('/upload', [HomeController::class, 'upload']);
+
 (new App(
     $router,
     ['uri' => $_SERVER['REQUEST_URI'], 'method' => $_SERVER['REQUEST_METHOD']],
