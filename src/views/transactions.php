@@ -42,7 +42,17 @@
     </tr>
     </thead>
     <tbody>
+    <?php if ($this->flash->has('success')): ?>
+        <div style="background-color: #d4edda; color: #155724; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+            <?= $this->flash->get('success') ?>
+        </div>
+    <?php endif; ?>
 
+    <?php if ($this->flash->has('error')): ?>
+        <div style="background-color: #f8d7da; color: #721c24; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+            <?= $this->flash->get('error') ?>
+        </div>
+    <?php endif; ?>
 
     <?php foreach ($this->params['transactions'] as $transaction): ?>
         <tr>

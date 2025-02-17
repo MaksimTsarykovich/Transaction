@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\App;
 use App\Config;
+use App\Controller;
 use App\Router;
 use App\Controllers\HomeController;
 use App\Controllers\TransactionController;
@@ -21,7 +22,9 @@ $router = new Router();
 $router
     ->get('/', [HomeController::class, 'index'])
     ->get('/transactions', [TransactionController::class, 'transactions'])
+    ->get('/error', [Controller::class,'error'])
     ->post('/upload', [HomeController::class, 'upload']);
+
 
 (new App(
     $router,

@@ -5,16 +5,19 @@ declare(strict_types=1);
 namespace App;
 
 use App\Exceptions\ViewNotFoundException;
+use App\Helpers\FlashMessage;
 
 class View
 {
     protected string $view;
     protected array $params = [];
+    protected FlashMessage $flash;
 
     public function __construct(string $view, array $params = [])
     {
         $this->view = $view;
         $this->params = $params;
+        $this->flash = new FlashMessage();
     }
 
     public static function make(string $view, array $params = []): static

@@ -5,8 +5,11 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Database\QueryBuilder;
+use App\Exceptions\DateIsIncorrectFormat;
+use App\Exceptions\RouterNotFoundException;
 use App\Model;
 use App\Database\DB;
+use DateTime;
 use Exception;
 use Generator;
 
@@ -27,14 +30,17 @@ class TransactionModel extends Model
     public static function dd($data): void
     {
         echo '<pre>';
-        print_r($data);
+        var_dump($data);
         echo '<pre>';
-
     }
 
-    public function getAllTransactionFromCvs(string $fileName): TransactionModel
+    public function getAllTransactionFromCvs(string $filePath): TransactionModel
     {
-        $this->insertCsvRowsToDatabase($fileName);
+        if (!file_exists($filePath)) {
+            throw new \Exception("Файл не найден: " . $filePath);
+        }
+
+        $this->insertCsvRowsToDatabase($filePath);
         $this->getAllTransactionFromDatabase();
         $this->calculateIncome();
         $this->calculateExpense();
@@ -96,9 +102,11 @@ class TransactionModel extends Model
 
     protected function formatDate(array $row): array
     {
-        $date = explode('/', $row['date']);
-        $europeDateFormat = "{year}-{month}-{day}";
-        $row['date'] = str_replace(['{month}', '{day}', '{year}'], $date, $europeDateFormat);
+            $date = DateTime::createFromFormat('m/d/Y', $row['date']);
+            if (!$date){
+                throw new DateIsIncorrectFormat();
+            }
+            $row['date'] = $date->format('Y-m-d');
         return $row;
     }
 
@@ -163,7 +171,8 @@ class TransactionModel extends Model
             $stmt->execute();
             $filed = $this->formatAmountToString($stmt->fetchColumn());
         } catch (Exception $e) {
-            echo $e->getMessage();
+            error_log("Ошибка расчета значений: ".$e->getMessage());
+
         }
         return $this;
     }
