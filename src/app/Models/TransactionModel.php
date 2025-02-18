@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Database\QueryBuilder;
+use App\Exceptions\CalculationException;
 use App\Exceptions\DateIsIncorrectFormat;
+use App\Exceptions\FileNotFound;
 use App\Exceptions\RouterNotFoundException;
 use App\Model;
 use App\Database\DB;
@@ -27,17 +29,14 @@ class TransactionModel extends Model
         $this->queryBuilder = new QueryBuilder($db);
     }
 
-    public static function dd($data): void
-    {
-        echo '<pre>';
-        var_dump($data);
-        echo '<pre>';
-    }
 
+    /**
+     * @throws FileNotFound
+     */
     public function getAllTransactionFromCvs(string $filePath): TransactionModel
     {
         if (!file_exists($filePath)) {
-            throw new \Exception("Файл не найден: " . $filePath);
+            throw new FileNotFound();
         }
 
         $this->insertCsvRowsToDatabase($filePath);
@@ -50,10 +49,12 @@ class TransactionModel extends Model
 
     protected function getAllTransactionFromDatabase(): TransactionModel
     {
-        $transactions = $this->queryBuilder->selectAll('transactions');
-
-        $this->transactions = array_map([$this, 'formatAmountToString'], $transactions);
-
+        try {
+            $transactions = $this->queryBuilder->selectAll('transactions');
+            $this->transactions = array_map([$this, 'formatAmountToString'], $transactions);
+        } catch (Exception) {
+            throw new TransactionsNotFound();
+        }
         return $this;
     }
 
@@ -79,9 +80,9 @@ class TransactionModel extends Model
                 $this->queryBuilder->insert('transactions', $row);
             }
             $this->db->commit();
-        } catch (Exception $e) {
-            echo $e->getMessage();
+        } catch (Exception) {
             $this->db->rollBack();
+            throw new FileNotCorrect();
         }
     }
 
@@ -170,9 +171,8 @@ class TransactionModel extends Model
             $stmt = $this->db->prepare($sql);
             $stmt->execute();
             $filed = $this->formatAmountToString($stmt->fetchColumn());
-        } catch (Exception $e) {
-            error_log("Ошибка расчета значений: ".$e->getMessage());
-
+        } catch (Exception) {
+            throw new CalculationException();
         }
         return $this;
     }

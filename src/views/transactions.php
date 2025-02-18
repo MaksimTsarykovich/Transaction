@@ -33,6 +33,10 @@
 </head>
 <body>
 <table>
+    <pre>
+    <?php var_dump($this->params);die?>
+
+    </pre>
     <thead>
     <tr>
         <th>Date</th>
