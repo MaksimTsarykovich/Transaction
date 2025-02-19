@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Database;
+namespace App\Helpers;
 
 
-use App\Models\TransactionModel;
+use App\Database\DB;
 use PDOException;
 
 class QueryBuilder

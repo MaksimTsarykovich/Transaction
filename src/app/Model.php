@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App;
 
 use App\Database\DB;
-use App\Database\QueryBuilder;
+use App\Helpers\QueryBuilder;
 
 abstract class Model
 {

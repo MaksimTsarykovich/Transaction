@@ -10,7 +10,7 @@ class Transaction
 
     public function __construct(
         private string $date,
-        private int    $amount,
+        private string $amount,
         private string $check,
         private string $description,
     )
@@ -20,7 +20,7 @@ class Transaction
     /**
      * @return int
      */
-    public function getAmount(): int
+    public function getAmount(): string
     {
         return $this->amount;
     }

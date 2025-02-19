@@ -33,10 +33,7 @@
 </head>
 <body>
 <table>
-    <pre>
-    <?php var_dump($this->params);die?>
 
-    </pre>
     <thead>
     <tr>
         <th>Date</th>
@@ -74,7 +71,7 @@
 
     <tr>
         <th colspan="3">Total Income:</th>
-        <td><?= $this->params['income'] ?></td>
+        <td><?= $this->params['transactions'] ?></td>
     </tr>
     <tr>
         <th colspan="3">Total Expense:</th>

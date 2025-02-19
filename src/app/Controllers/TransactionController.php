@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace App\Controllers;
 
-use App\App;
 use App\Controller;
-use App\Models\CvsFile;
+use App\Helpers\Currency;
+use App\Models\CsvFile;
 use App\Models\TransactionModel;
+use App\Models\TransactionProcessor;
 use App\View;
 
 
@@ -15,18 +16,16 @@ class TransactionController extends Controller
 {
     public function transactions(): View
     {
-        $csvFile = new CvsFile(STORAGE_PATH . '/transactions_sample.csv');
+        $csvFile = new CsvFile(STORAGE_PATH . '/transactions_sample.csv');
+        $transactionProcessor = new TransactionProcessor($csvFile);
+        try {
+            $transactions = $transactionProcessor->processTransactions();
+        }catch (\Exception $e){
+            echo $e->getMessage();
+        }
         $data = $csvFile->readAsArray();
 
-//        try {
-//            $transactions [] = (new TransactionModel(App::db()))
-//                ->getAllTransactionFromCvs(STORAGE_PATH . '/transactions_sampl.csv')
-//                ->toArray();
-//            $this->flash->set('success', 'Таблица успешно загружена');
-//        } catch (\Exception $e) {
-//            return $this->handleError($e);
-//        }
-        return View::make('transactions', ['data'=>$data]);
+        return View::make('transactions', ['transactions' => $transactions]);
     }
 
 }

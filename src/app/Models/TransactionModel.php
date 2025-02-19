@@ -4,13 +4,12 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Database\QueryBuilder;
+use App\Database\DB;
 use App\Exceptions\CalculationException;
 use App\Exceptions\DateIsIncorrectFormat;
 use App\Exceptions\FileNotFound;
-use App\Exceptions\RouterNotFoundException;
+use App\Helpers\QueryBuilder;
 use App\Model;
-use App\Database\DB;
 use DateTime;
 use Exception;
 use Generator;
