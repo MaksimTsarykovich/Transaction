@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace App\Controllers;
 
+use App\App;
 use App\Controller;
 use App\Helpers\Currency;
+use App\Helpers\Utils;
 use App\Models\CsvFile;
 use App\Models\TransactionModel;
 use App\Models\TransactionProcessor;
@@ -17,9 +19,10 @@ class TransactionController extends Controller
     public function transactions(): View
     {
         $csvFile = new CsvFile(STORAGE_PATH . '/transactions_sample.csv');
-        $transactionProcessor = new TransactionProcessor($csvFile);
+        $transactionProcessor = new TransactionProcessor($csvFile,App::db());
         try {
-            $transactions = $transactionProcessor->processTransactions();
+            $transactions = $transactionProcessor
+                ->processTransactions();
         }catch (\Exception $e){
             echo $e->getMessage();
         }

@@ -4,21 +4,27 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Database\DB;
 use App\Database\TransactionRepository;
 use App\Exceptions\DateIsIncorrectFormat;
 use App\Helpers\Currency;
+use App\Helpers\FinanceCalculator;
 use App\Helpers\Utils;
 use DateTime;
 
-class TransactionProcessor
+readonly class TransactionProcessor
 {
-    private Currency $currency;
     private TransactionRepository $transactionRepository;
+    private FinanceCalculator $financeCalculator;
 
     public function __construct(
         private CsvFile $csvFile,
+        DB              $db,
     )
     {
+        $this->transactionRepository = new TransactionRepository($db);
+        $this->financeCalculator = new FinanceCalculator();
+
     }
 
     public function readTransactionsFromCvsFile(): array
@@ -37,9 +43,6 @@ class TransactionProcessor
         return $transactions;
     }
 
-    /**
-     * @throws DateIsIncorrectFormat
-     */
     public function processTransactions(): array
     {
         $transactions = $this->readTransactionsFromCvsFile();
@@ -47,45 +50,19 @@ class TransactionProcessor
         foreach ($transactions as $transaction) {
             $processedTransactions [] = $this->formatTransaction($transaction);
         }
-        Utils::dump($processedTransactions);
-        $processedTransactions = array_merge($processedTransactions, $this->calculateFinancialSummary($processedTransactions));
         $this->transactionRepository->saveAll($processedTransactions);
-        return $processedTransactions;
+        $financialSummary = $this->financeCalculator->getTotal();
+        $processedTransactions = array_merge($processedTransactions, $financialSummary);
+        Utils::dump($processedTransactions);
+        $this->formatAmount($processedTransactions);
+        return array_merge($processedTransactions, $financialSummary);
     }
 
     private function formatTransaction(Transaction $transaction): array
     {
-        $this->currency = new Currency($transaction->getAmount());
-        $amount = $this->currency->formatToInt($transaction->getAmount());
-        return [
-            'date' => $this->formatDate($transaction->getDate()),
-            'amount' => $amount,
-            'check' => $transaction->getCheck(),
-            'description' => $transaction->getDescription(),
-            'is_positive' => $this->currency->isPositiveAmount($amount),
-        ];
+        $this->transactionRepository->save($transaction);
+        return $transaction->toArray();
     }
 
-    private function calculateFinancialSummary(array $transactions): array
-    {
-        return array_reduce($transactions, function ($carry, $transaction) {
-            if ($transaction['amount'] > 0) {
-                $carry['income'] += $transaction['amount'];
-            } elseif ($transaction['amount'] < 0) {
-                $carry['expense'] += $transaction['amount'];
-            }
-            $carry['total'] += $transaction['amount'];
-            return $carry;
-        }, ['income' => 0, 'expense' => 0, 'total' => 0]);
-    }
-
-    private function formatDate(string $date): string
-    {
-        $date = DateTime::createFromFormat('m/d/Y', $date);
-        if (!$date) {
-            throw new DateIsIncorrectFormat();
-        }
-        return $date->format('Y-m-d');
-    }
 
 }

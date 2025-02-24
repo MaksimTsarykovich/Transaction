@@ -6,7 +6,7 @@ namespace App\Models;
 
 use App\Exceptions\FileNotFound;
 
-class File
+readonly class File
 {
     protected string $filePath;
 

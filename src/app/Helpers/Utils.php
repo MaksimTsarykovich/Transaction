@@ -2,7 +2,7 @@
 
 namespace App\Helpers;
 
-class Utils
+readonly class Utils
 {
     public static function dump($variable){
         echo '<pre>';

@@ -11,7 +11,7 @@ use PDOException;
  * @mixin PDO
  */
 
-class DB
+readonly class DB
 {
     private PDO $pdo;
 

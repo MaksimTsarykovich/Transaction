@@ -6,7 +6,7 @@ namespace App\Helpers;
 use App\Database\DB;
 use PDOException;
 
-class QueryBuilder
+readonly class QueryBuilder
 {
     private DB $db;
 
@@ -25,11 +25,13 @@ class QueryBuilder
 
     public function insert($table, $data): void
     {
+
         $keys = '`'.implode('`, `', array_keys($data)) . '`';
         $tags = ':' . implode(', :', array_keys($data));
         $sql = "INSERT INTO `{$table}` ({$keys}) VALUES ({$tags})";
 
         if ($this->isRowExist($data['description'])) {
+
             return;
         }
 
@@ -44,9 +46,9 @@ class QueryBuilder
     protected function isRowExist($description): bool
     {
         $sql = "SELECT COUNT(*) FROM `transactions` WHERE `description` = :description";
+
         $stmt = $this->db->prepare($sql);
         try {
-
             $stmt->execute(['description' => $description]);
         } catch (PDOException $e) {
             echo 'Error: ' . $e->getMessage();

@@ -4,7 +4,7 @@ namespace App\Database;
 
 use App\Helpers\QueryBuilder;
 
-class CurrencyRepository extends DB
+readonly class CurrencyRepository extends DB
 {
     private QueryBuilder $queryBuilder;
 

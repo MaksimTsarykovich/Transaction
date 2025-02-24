@@ -54,8 +54,11 @@
             <?= $this->flash->get('error') ?>
         </div>
     <?php endif; ?>
-
-    <?php foreach ($this->params['transactions'] as $transaction): ?>
+    <?php foreach ($this->params['transactions'] as $transaction):
+        if(is_int($transaction)){
+            continue;
+        }
+        ?>
         <tr>
             <td><?= $transaction['date'] ?></td>
             <td><?= $transaction['check'] ?></td>
@@ -71,15 +74,15 @@
 
     <tr>
         <th colspan="3">Total Income:</th>
-        <td><?= $this->params['transactions'] ?></td>
+        <td><?= $this->params['transactions']['income'] ?></td>
     </tr>
     <tr>
         <th colspan="3">Total Expense:</th>
-        <td><?= $this->params['expense'] ?></td>
+        <td><?= $this->params['transactions']['expense'] ?></td>
     </tr>
     <tr>
         <th colspan="3">Net Total:</th>
-        <td><?= $this->params['net'] ?></td>
+        <td><?= $this->params['transactions']['total'] ?></td>
     </tr>
     </tfoot>
 </table>

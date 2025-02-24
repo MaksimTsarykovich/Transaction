@@ -4,20 +4,21 @@ namespace App\Database;
 
 
 use App\Helpers\QueryBuilder;
+use App\Helpers\Utils;
 
-class TransactionRepository extends DB
+readonly class TransactionRepository
 {
     private QueryBuilder $queryBuilder;
 
     public function __construct(DB $db)
     {
-        parent::__construct($db);
         $this->queryBuilder = new queryBuilder($db);
     }
 
-    public function save(array $transactions): void
+    public function save(array $transaction): void
     {
-        $this->queryBuilder->insert('transactions', $transactions);
+
+        $this->queryBuilder->insert('transactions', $transaction);
     }
 
     public function saveAll(array $transactions): void

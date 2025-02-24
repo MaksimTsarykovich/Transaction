@@ -4,7 +4,7 @@ namespace App\Models;
 
 use App\Exceptions\FileNotFound;
 
-class CsvFile extends File
+readonly class CsvFile extends File
 {
     /**
      * @throws FileNotFound
