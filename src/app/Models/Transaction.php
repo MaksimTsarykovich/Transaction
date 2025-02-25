@@ -6,11 +6,14 @@ namespace App\Models;
 
 use App\Exceptions\DateIsIncorrectFormat;
 use App\Helpers\Currency;
+use App\Helpers\FinanceCalculator;
 use App\Helpers\Utils;
+use DateTime;
 
 readonly  class Transaction
 {
 
+    private Currency $currency;
 
     public function __construct(
         private string $date,
@@ -19,7 +22,22 @@ readonly  class Transaction
         private string $description,
     )
     {
+        $this->currency = new Currency($this->amount);
     }
+
+    public function toArray(Transaction $transaction): array
+    {
+        $amount = $this->currency->formatToInt($this->amount);
+        return [
+            'date' => $this->date,
+            'amount' => $amount,
+            'check' => $this->check,
+            'description' => $this->description,
+            'is_positive' => $this->currency->isPositiveAmount($amount),
+        ];
+
+    }
+
 
     /**
      * @return string
@@ -29,36 +47,10 @@ readonly  class Transaction
         return $this->amount;
     }
 
-    public function toArray ():array
+    public function getCurrency(): Currency
     {
-        $currency = new Currency($transaction->getAmount());
-        $amount = $currency->formatToInt($transaction->getAmount());
-        $this->financeCalculator->calculate($amount);
-        Utils::dump($transaction);
-        return [
-            'date' => $this->formatDate($this->date),
-            'amount' => $currency->formatToInt($this->amount),
-            'check' => $this->check,
-            'description' => $this->description,
-            'is_positive' => $currency->isPositiveAmount($amount),
-        ];
-
-    }
-    private function formatAmount(Transaction $transaction): array{
-        $currency = new Currency($transaction->getAmount());
-        $amount = $currency->formatToInt($transaction->getAmount());
-        $this->financeCalculator->calculate($amount);
-
-        return $trasactions;
+        return $this->currency;
     }
 
-    private function formatDate(string $date): string
-    {
-        $date = DateTime::createFromFormat('m/d/Y', $date);
-        if (!$date) {
-            throw new DateIsIncorrectFormat();
-        }
-        return $date->format('Y-m-d');
-    }
 
 }

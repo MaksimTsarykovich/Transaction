@@ -7,7 +7,6 @@ namespace App\Models;
 use App\Database\DB;
 use App\Database\TransactionRepository;
 use App\Exceptions\DateIsIncorrectFormat;
-use App\Helpers\Currency;
 use App\Helpers\FinanceCalculator;
 use App\Helpers\Utils;
 use DateTime;
@@ -24,10 +23,9 @@ readonly class TransactionProcessor
     {
         $this->transactionRepository = new TransactionRepository($db);
         $this->financeCalculator = new FinanceCalculator();
-
     }
 
-    public function readTransactionsFromCvsFile(): array
+    private function readTransactionsFromCvsFile(): array
     {
         $transactions = [];
         $rows = $this->csvFile->readAsArray();
@@ -38,7 +36,7 @@ readonly class TransactionProcessor
             $description = $row[2];
             $amount = $row[3];
 
-            $transactions [] = new Transaction($date, $amount, $check, $description);
+            $transactions [] = new Transaction($this->formatDate($date), $amount, $check, $description);
         }
         return $transactions;
     }
@@ -48,21 +46,25 @@ readonly class TransactionProcessor
         $transactions = $this->readTransactionsFromCvsFile();
         $processedTransactions = [];
         foreach ($transactions as $transaction) {
-            $processedTransactions [] = $this->formatTransaction($transaction);
+            $transactionArray = $transaction->toArray($transaction);
+            $this->financeCalculator->calculate($transaction->getCurrency());
+
+            $transactionArray['amount'] = $transaction->getCurrency()->getAmount();
+            $this->transactionRepository->save($transactionArray);
+
+            $processedTransactions [] = $transactionArray;
         }
-        $this->transactionRepository->saveAll($processedTransactions);
+
         $financialSummary = $this->financeCalculator->getTotal();
-        $processedTransactions = array_merge($processedTransactions, $financialSummary);
-        Utils::dump($processedTransactions);
-        $this->formatAmount($processedTransactions);
         return array_merge($processedTransactions, $financialSummary);
     }
 
-    private function formatTransaction(Transaction $transaction): array
+    private function formatDate(string $date): string
     {
-        $this->transactionRepository->save($transaction);
-        return $transaction->toArray();
+        $date = DateTime::createFromFormat('m/d/Y', $date);
+        if (!$date) {
+            throw new DateIsIncorrectFormat();
+        }
+        return $date->format('Y-m-d');
     }
-
-
 }

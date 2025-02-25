@@ -19,11 +19,9 @@ readonly class Currency
     public function formatToInt(string $amount, string $currencySymbol = '$'): int
     {
         $amount = str_replace([$currencySymbol, ' ',], '', $amount);
-
         $amount = $this->normalizeDecimalSeparator($amount);
-        $amount *= static::BASE ** ($this->decimal);
 
-        return $amount;
+        return (int)(bcmul($amount,static::BASE ** ($this->decimal)));
     }
 
     public function formatToCurrency(int $amount, string $currencySymbol = '$'): string
@@ -48,12 +46,23 @@ readonly class Currency
             $amount = str_replace('.', '', $amount);
             $amount = str_replace(',', '.', $amount);
         }
+
         return $amount;
     }
 
     public function isPositiveAmount(int $amount): int
     {
         return $amount > 0;
+    }
+
+    public function getIntAmount(): int
+    {
+        return $this->formatToInt($this->amount);
+    }
+
+    public function getDecimal(): int
+    {
+        return $this->decimal;
     }
 
 }
