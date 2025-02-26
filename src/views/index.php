@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Форма загрузки файлов</title>
-    <link rel="stylesheet" href="/assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/assets/ccs/bootstrap/bootstrap.min.css">
+    <link rel="stylesheet" href="/assets/ccs/main.css"
 </head>
 <body>
 <div class="container d-flex justify-content-center align-items-center vh-100">
@@ -20,6 +21,6 @@
     </div>
 </div>
 
-<script src="assets/js/bootstrap.bundle.min.js"></script>
+<script src="/assets/ccs/bootstrap/bootstrap.bundle.min.js"></script>
 </body>
 </html>

@@ -36,7 +36,8 @@ class FinanceCalculator
         ];
     }
 
-    public function formatToCurrency(int $amount, string $currencySymbol = '$'): string
+
+    protected function formatToCurrency(int $amount, string $currencySymbol = '$'): string
     {
         (float)$amount /= static::BASE ** ($this->decimal);
         if ($amount < 0) {
@@ -46,7 +47,6 @@ class FinanceCalculator
         return $currencySymbol . number_format($amount,
                 $this->decimal, '.', ',');
     }
-
 
     private function setDecimal(Currency $currency): void
     {

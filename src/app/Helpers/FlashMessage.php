@@ -30,9 +30,10 @@ readonly class FlashMessage
         }
     }
 
-    public function set(string $key, string $message): void
+    public function set(string $key, string $message): FlashMessage
     {
         $_SESSION[$this->sessionKey][$key] = $message;
+        return $this;
     }
 
     public function get(string $key): null|string

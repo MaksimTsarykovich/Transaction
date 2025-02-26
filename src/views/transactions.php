@@ -1,56 +1,31 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Форма загрузки файлов</title>
+
+    <link rel="stylesheet" href="/assets/ccs/bootstrap/bootstrap.min.css">
+    <link rel="stylesheet" href="/assets/ccs/main.css">
+
     <title>Transactions</title>
-    <style>
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            text-align: center;
-        }
 
-        table tr th, table tr td {
-            padding: 5px;
-            border: 1px #eee solid;
-        }
-
-        tfoot tr th, tfoot tr td {
-            font-size: 20px;
-        }
-
-        tfoot tr th {
-            text-align: right;
-        }
-
-        .positive {
-            color: green;
-            font-weight: bold;
-        }
-
-        .negative {
-            color: red;
-            font-weight: bold;
-        }
-    </style>
 </head>
 <body>
 <table>
 
-    <?php use App\Helpers\Utils;
-
-    if ($this->flash->has('success')): ?>
-        <div style="background-color: #d4edda; color: #155724; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
-            <?= $this->flash->get('success') ?>
-        </div>
-    <?php endif; ?>
-
-    <?php if ($this->flash->has('error')): ?>
+    <?php if ($this->params['flash']->has('error')): ?>
         <div style="background-color: #f8d7da; color: #721c24; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
-            <?= $this->flash->get('error') ?>
+            <?= $this->params['flash']->get('error') ?>
         </div>
     <?php endif; ?>
 
-    <div class="container mt-5">
+    <div class="container-fluid mt-2">
+        <?php if ($this->params['flash']->has('success')): ?>
+            <div style="background-color: #d4edda; color: #155724; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                <?= $this->params['flash']->get('success') ?>
+            </div>
+        <?php endif; ?>
         <div class="d-flex justify-content-center">
             <table class="table table-bordered table-custom">
                 <thead class="table-light">
@@ -93,5 +68,6 @@
             </table>
         </div>
     </div>
+    <script src="/assets/ccs/bootstrap/bootstrap.bundle.min.js"></script>
 </body>
 </html>

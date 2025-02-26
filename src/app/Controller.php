@@ -16,8 +16,7 @@ class  Controller
 
     public function handleError(\Exception $exception): View
     {
-        error_log('Ошибка при загрузке транзакций: ' . $exception->getMessage());
-        $this->flash->set('Ошибка: ', $exception->getMessage());
-        return View::make('error', ['error' => $exception->getMessage()]);
+        $this->flash->set('error', 'Ошибка при загрузке таблицы: '. $exception->getMessage());
+        return View::make('error',['flash' => $this->flash]);
     }
 }

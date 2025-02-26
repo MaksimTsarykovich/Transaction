@@ -6,6 +6,8 @@ namespace App\Models;
 
 use App\Database\DB;
 use App\Database\TransactionRepository;
+use App\Exceptions\DatabaseCompareRowException;
+use App\Exceptions\DatabaseInsertException;
 use App\Exceptions\DateIsIncorrectFormat;
 use App\Exceptions\FileNotFound;
 use App\Helpers\FinanceCalculator;
@@ -33,24 +35,25 @@ readonly class TransactionProcessor
     private function readTransactionsFromCvsFile(): array
     {
         $transactions = [];
+        $rows = $this->csvFile->readAsArray();
+        array_shift($rows);
+        foreach ($rows as $row) {
+            $date = $row[0];
+            $check = $row[1];
+            $description = $row[2];
+            $amount = $row[3];
 
-            $rows = $this->csvFile->readAsArray();
-            array_shift($rows);
-            foreach ($rows as $row) {
-                $date = $row[0];
-                $check = $row[1];
-                $description = $row[2];
-                $amount = $row[3];
-
-                $transactions [] = new Transaction($this->formatDate($date), $amount, $check, $description);
-            }
-
+            $transactions [] = new Transaction($this->formatDate($date), $amount, $check, $description);
+        }
         return $transactions;
     }
 
     /**
+     * @return array
      * @throws DateIsIncorrectFormat
      * @throws FileNotFound
+     * @throws DatabaseCompareRowException
+     * @throws DatabaseInsertException
      */
     public function processTransactions(): array
     {

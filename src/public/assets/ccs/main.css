@@ -1,0 +1,48 @@
+table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: center;
+}
+
+table tr th, table tr td {
+    padding: 5px;
+    border: 1px #eee solid;
+
+}
+
+tfoot tr th, tfoot tr td {
+    font-size: 20px;
+}
+
+tfoot tr th {
+    text-align: right;
+}
+
+.positive {
+    color: green !important;
+    font-weight: bold;
+}
+
+.negative {
+    color: red !important;
+    font-weight: bold;
+}
+
+/* Дополнительные стили для центрирования и оформления */
+.error-container {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    background-color: #f8f9fa;
+}
+.error-message {
+    font-size: 1.5rem;
+    margin-bottom: 2rem;
+    color: #dc3545; /* Красный цвет для текста ошибки */
+}
+.btn-custom {
+    margin: 0 0.5rem;
+}
+
