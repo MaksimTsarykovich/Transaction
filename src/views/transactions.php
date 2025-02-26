@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <title>Transactions</title>
     <style>
@@ -24,26 +24,21 @@
 
         .positive {
             color: green;
+            font-weight: bold;
         }
 
         .negative {
             color: red;
+            font-weight: bold;
         }
     </style>
 </head>
 <body>
 <table>
 
-    <thead>
-    <tr>
-        <th>Date</th>
-        <th>Check #</th>
-        <th>Description</th>
-        <th>Amount</th>
-    </tr>
-    </thead>
-    <tbody>
-    <?php if ($this->flash->has('success')): ?>
+    <?php use App\Helpers\Utils;
+
+    if ($this->flash->has('success')): ?>
         <div style="background-color: #d4edda; color: #155724; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
             <?= $this->flash->get('success') ?>
         </div>
@@ -54,37 +49,49 @@
             <?= $this->flash->get('error') ?>
         </div>
     <?php endif; ?>
-    <?php foreach ($this->params['transactions'] as $transaction):
-        if(is_int($transaction)){
-            continue;
-        }
-        ?>
-        <tr>
-            <td><?= $transaction['date'] ?></td>
-            <td><?= $transaction['check'] ?></td>
-            <td><?= $transaction['description'] ?></td>
-            <td class="<?= $transaction['is_positive'] ? 'positive' : 'negative' ?>">
-                <?= $transaction['amount'] ?>
-            </td>
-        </tr>
-    <?php endforeach; ?>
 
-    </tbody>
-    <tfoot>
+    <div class="container mt-5">
+        <div class="d-flex justify-content-center">
+            <table class="table table-bordered table-custom">
+                <thead class="table-light">
+                <tr>
+                    <th>Date</th>
+                    <th>Check #</th>
+                    <th>Description</th>
+                    <th>Amount</th>
+                </tr>
+                </thead>
+                <tbody>
 
-    <tr>
-        <th colspan="3">Total Income:</th>
-        <td><?= $this->params['transactions']['income'] ?></td>
-    </tr>
-    <tr>
-        <th colspan="3">Total Expense:</th>
-        <td><?= $this->params['transactions']['expense'] ?></td>
-    </tr>
-    <tr>
-        <th colspan="3">Net Total:</th>
-        <td><?= $this->params['transactions']['total'] ?></td>
-    </tr>
-    </tfoot>
-</table>
+                <?php foreach ($this->params['transactionsSummary']['transactions'] as $transaction): ?>
+                    <tr>
+                        <td><?= $transaction['date'] ?></td>
+                        <td><?= $transaction['check'] ?></td>
+                        <td><?= $transaction['description'] ?></td>
+                        <td class="<?= $transaction['is_positive'] ? 'positive' : 'negative' ?>">
+                            <?= $transaction['amount'] ?>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+
+                </tbody>
+                <tfoot>
+
+                <tr>
+                    <th colspan="3">Total Income:</th>
+                    <td><?= $this->params['transactionsSummary']['financialSummary']['income'] ?></td>
+                </tr>
+                <tr>
+                    <th colspan="3">Total Expense:</th>
+                    <td><?= $this->params['transactionsSummary']['financialSummary']['expense'] ?></td>
+                </tr>
+                <tr>
+                    <th colspan="3">Net Total:</th>
+                    <td><?= $this->params['transactionsSummary']['financialSummary']['total'] ?></td>
+                </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
 </body>
 </html>

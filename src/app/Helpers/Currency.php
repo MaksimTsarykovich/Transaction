@@ -65,4 +65,9 @@ readonly class Currency
         return $this->decimal;
     }
 
+    public function getAmount(): string
+    {
+        return $this->amount;
+    }
+
 }

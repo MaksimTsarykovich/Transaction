@@ -26,9 +26,7 @@ class TransactionController extends Controller
         }catch (\Exception $e){
             echo $e->getMessage();
         }
-        $data = $csvFile->readAsArray();
-
-        return View::make('transactions', ['transactions' => $transactions]);
+        return View::make('transactions', ['transactionsSummary' => $transactions]);
     }
 
 }

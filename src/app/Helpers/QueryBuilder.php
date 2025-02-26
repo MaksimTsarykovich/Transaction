@@ -4,6 +4,8 @@ namespace App\Helpers;
 
 
 use App\Database\DB;
+use App\Exceptions\DatabaseCompareRowException;
+use App\Exceptions\DatabaseInsertException;
 use PDOException;
 
 readonly class QueryBuilder
@@ -23,6 +25,10 @@ readonly class QueryBuilder
         return $stmt->fetchAll();
     }
 
+    /**
+     * @throws DatabaseInsertException
+     * @throws DatabaseCompareRowException
+     */
     public function insert($table, $data): void
     {
 
@@ -31,7 +37,6 @@ readonly class QueryBuilder
         $sql = "INSERT INTO `{$table}` ({$keys}) VALUES ({$tags})";
 
         if ($this->isRowExist($data['description'])) {
-
             return;
         }
 
@@ -39,10 +44,13 @@ readonly class QueryBuilder
             $stmt = $this->db->prepare($sql);
             $stmt->execute($data);
         } catch (PDOException $e) {
-            echo 'Error: ' . $e->getMessage();
+            throw new DatabaseInsertException();
         }
     }
 
+    /**
+     * @throws DatabaseCompareRowException
+     */
     protected function isRowExist($description): bool
     {
         $sql = "SELECT COUNT(*) FROM `transactions` WHERE `description` = :description";
@@ -51,7 +59,7 @@ readonly class QueryBuilder
         try {
             $stmt->execute(['description' => $description]);
         } catch (PDOException $e) {
-            echo 'Error: ' . $e->getMessage();
+            throw new DatabaseCompareRowException();
         }
 
         return $stmt->fetchColumn() > 0;

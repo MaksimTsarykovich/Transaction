@@ -3,6 +3,8 @@
 namespace App\Database;
 
 
+use App\Exceptions\DatabaseCompareRowException;
+use App\Exceptions\DatabaseInsertException;
 use App\Helpers\QueryBuilder;
 use App\Helpers\Utils;
 
@@ -15,21 +17,13 @@ readonly class TransactionRepository
         $this->queryBuilder = new queryBuilder($db);
     }
 
+    /**
+     * @throws DatabaseCompareRowException
+     * @throws DatabaseInsertException
+     */
     public function save(array $transaction): void
     {
-
         $this->queryBuilder->insert('transactions', $transaction);
-    }
-
-    public function saveAll(array $transactions): void
-    {
-        foreach ($transactions as $transaction) {
-            $this->save($transaction);
-        }
-    }
-
-    public function getAll(): array {
-        return $this->queryBuilder->selectAll('transactions');
     }
 
 }

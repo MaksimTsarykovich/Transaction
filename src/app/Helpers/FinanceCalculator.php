@@ -6,6 +6,7 @@ namespace App\Helpers;
 
 class FinanceCalculator
 {
+    const BASE = 10;
     private array $income = [];
     private array $expense = [];
     private int $decimal;
@@ -15,7 +16,6 @@ class FinanceCalculator
         $this->setDecimal($currency);
 
         $amount = $currency->getIntAmount();
-        Utils::dump($this->decimal);
 
         if ($amount > 0) {
             $this->income[] = $amount;
@@ -30,11 +30,23 @@ class FinanceCalculator
         $totalExpense = array_sum($this->expense);
         $total = $totalIncome + $totalExpense;
         return [
-            'total' => $total,
-            'income' => $totalIncome,
-            'expense' => $totalExpense,
+            'total' => $this->formatToCurrency($total),
+            'income' => $this->formatToCurrency($totalIncome),
+            'expense' => $this->formatToCurrency($totalExpense),
         ];
     }
+
+    public function formatToCurrency(int $amount, string $currencySymbol = '$'): string
+    {
+        (float)$amount /= static::BASE ** ($this->decimal);
+        if ($amount < 0) {
+            return '-' . $currencySymbol . number_format(abs($amount),
+                    $this->decimal, '.', ',');
+        }
+        return $currencySymbol . number_format($amount,
+                $this->decimal, '.', ',');
+    }
+
 
     private function setDecimal(Currency $currency): void
     {
