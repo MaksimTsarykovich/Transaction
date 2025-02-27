@@ -14,12 +14,12 @@ readonly class File
 {
     protected array $file;
     protected string $filePath;
-    protected FileRepository $FileRepository;
+    protected FileRepository $fileRepository;
 
     public function __construct(DB $db, array $file = [])
     {
         $this->file = $file;
-        $this->FileRepository = new FileRepository($db);
+        $this->fileRepository = new FileRepository($db);
     }
 
     public function exists(): bool
@@ -37,7 +37,7 @@ readonly class File
 
     public function save(): void
     {
-        $this->FileRepository->save($this->file['name']);
+        $this->fileRepository->save($this->file['name']);
         move_uploaded_file($this->file["tmp_name"], STORAGE_PATH . '/' . $this->file['name']);
     }
 
@@ -46,13 +46,13 @@ readonly class File
      */
     public function delete(int $id, string $filename): void
     {
-        $this->FileRepository->delete($id);
+        $this->fileRepository->delete($id);
         unlink(STORAGE_PATH . '/' . $filename);
     }
 
     public function getAll()
     {
-        return $this->FileRepository->getAll();
+        return $this->fileRepository->getAll();
     }
 
 

@@ -19,7 +19,7 @@ class TransactionController extends Controller
 {
     public function transactions(): View
     {
-        $csvFile = new CsvFile(STORAGE_PATH . '/transactions_sample.csv');
+        $csvFile = new CsvFile(App::db(),STORAGE_PATH . '/transactions_sample.csv');
         $transactionProcessor = new TransactionProcessor($csvFile, App::db());
 
         try {

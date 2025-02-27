@@ -8,7 +8,7 @@ use App\Exceptions\DatabaseInsertException;
 use App\Helpers\QueryBuilder;
 use App\Helpers\Utils;
 
-class FileRepository
+readonly class FileRepository
 {
 
     private QueryBuilder $queryBuilder;
