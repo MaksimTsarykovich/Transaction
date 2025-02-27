@@ -5,6 +5,7 @@ namespace App\Helpers;
 
 use App\Database\DB;
 use App\Exceptions\DatabaseCompareRowException;
+use App\Exceptions\DatabaseDeleteException;
 use App\Exceptions\DatabaseInsertException;
 use PDOException;
 
@@ -35,11 +36,11 @@ readonly class QueryBuilder
         $keys = '`'.implode('`, `', array_keys($data)) . '`';
         $tags = ':' . implode(', :', array_keys($data));
         $sql = "INSERT INTO `{$table}` ({$keys}) VALUES ({$tags})";
-
-        if ($this->isRowExist($data['description'])) {
-            return;
+        if (isset($data['description'])){
+            if ($this->isRowExist($data['description'])) {
+                return;
+            }
         }
-
         try {
             $stmt = $this->db->prepare($sql);
             $stmt->execute($data);
@@ -63,6 +64,33 @@ readonly class QueryBuilder
         }
 
         return $stmt->fetchColumn() > 0;
+    }
+
+    public function delete(string $table, array $data): void
+    {
+        $keys = '`'.implode('`, `', array_keys($data)) . '`';
+        $tags = ':' . implode(', :', array_keys($data));
+        $sql = "DELETE FROM `{$table}` WHERE {$keys} = {$tags}";
+        try {
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute($data);
+        } catch (PDOException $e) {
+            throw new DatabaseDeleteException();
+        }
+    }
+
+    public function select(string $table, array $data)
+    {
+        $keys = '`'.implode('`, `', array_keys($data)) . '`';
+        $tags = ':' . implode(', :', array_keys($data));
+        $sql = "SELECT * FROM $table WHERE {$keys} = {$tags}";
+        try {
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute($data);
+            return $stmt->fetchAll();
+        } catch (PDOException $e) {
+            throw new DatabaseDeleteException();
+        }
     }
 
 

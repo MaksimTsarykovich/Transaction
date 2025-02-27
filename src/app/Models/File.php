@@ -4,28 +4,56 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Database\DB;
+use App\Database\FileRepository;
+use App\Exceptions\DatabaseDeleteException;
 use App\Exceptions\FileNotFound;
+use App\Helpers\Utils;
 
 readonly class File
 {
+    protected array $file;
     protected string $filePath;
+    protected FileRepository $FileRepository;
 
-    public function __construct(string $filePath)
+    public function __construct(DB $db, array $file = [])
     {
-        $this->filePath = $filePath;
+        $this->file = $file;
+        $this->FileRepository = new FileRepository($db);
     }
 
     public function exists(): bool
     {
-        return file_exists($this->filePath);
+        return file_exists(STORAGE_PATH . '/' . $this->file['name']);
     }
 
-    public function read(): string
+    public function read(string $filePath): string
     {
-        if(!$this->exists()){
+        if (!$this->exists()) {
             throw new FileNotFound();
         }
-        return file_get_contents($this->filePath);
+        return file_get_contents($filePath);
     }
+
+    public function save(): void
+    {
+        $this->FileRepository->save($this->file['name']);
+        move_uploaded_file($this->file["tmp_name"], STORAGE_PATH . '/' . $this->file['name']);
+    }
+
+    /**
+     * @throws DatabaseDeleteException
+     */
+    public function delete(int $id, string $filename): void
+    {
+        $this->FileRepository->delete($id);
+        unlink(STORAGE_PATH . '/' . $filename);
+    }
+
+    public function getAll()
+    {
+        return $this->FileRepository->getAll();
+    }
+
 
 }

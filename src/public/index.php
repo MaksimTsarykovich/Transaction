@@ -6,7 +6,7 @@ use App\App;
 use App\Config;
 use App\Controller;
 use App\Router;
-use App\Controllers\HomeController;
+use App\Controllers\FileController;
 use App\Controllers\TransactionController;
 
 require_once __DIR__ . '/../vendor/autoload.php';
@@ -20,10 +20,12 @@ $dotenv->load();
 $router = new Router();
 
 $router
-    ->get('/', [HomeController::class, 'index'])
+    ->get('/', [FileController::class, 'index'])
     ->get('/transactions', [TransactionController::class, 'transactions'])
-    ->get('/error', [Controller::class,'error'])
-    ->post('/upload', [HomeController::class, 'upload']);
+    ->get('/error', [Controller::class, 'error'])
+    ->get('/form-upload', [FileController::class, 'formUpload'])
+    ->post('/upload', [FileController::class, 'upload'])
+    ->get('/delete', [FileController::class, 'delete']);
 
 
 (new App(
