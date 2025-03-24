@@ -4,10 +4,14 @@ declare(strict_types=1);
 
 use App\App;
 use App\Config;
+use App\Connection;
 use App\Controller;
 use App\Router;
 use App\Controllers\FileController;
 use App\Controllers\TransactionController;
+use Doctrine\DBAL\DriverManager;
+use Psr\Container\ContainerInterface;
+use function DI\get;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
@@ -17,7 +21,24 @@ const VIEW_PATH = __DIR__ . '/../views';
 $dotenv = Dotenv\Dotenv::createImmutable(dirname(__DIR__));
 $dotenv->load();
 
-$router = new Router();
+$containerBuilder = new DI\ContainerBuilder();
+
+$containerBuilder->addDefinitions([
+    DB::class => function (ContainerInterface $container) {
+        $connectionParameters = [
+            'host' => $_ENV['DB_HOST'],
+            'user' => $_ENV['DB_USER'],
+            'password' => $_ENV['DB_PASSWORD'],
+            'database' => $_ENV['DB_DATABASE'],
+            'driver' => $_ENV['DB_DRIVER'] ?? 'pdo_mysql'];
+        return DriverManager::getConnection($connectionParameters);
+    },
+],
+);
+
+$container = $containerBuilder->build();
+
+$router = new Router($container);
 
 $router
     ->get('/', [FileController::class, 'index'])

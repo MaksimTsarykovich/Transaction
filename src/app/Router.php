@@ -9,6 +9,12 @@ use App\Exceptions\RouterNotFoundException;
 class Router
 {
     private array $routes;
+    private $container;
+
+    public function __construct($container)
+    {
+        $this->container = $container;
+    }
 
     public function register(string $requestMethod, string $route, callable|array $action): self
     {
@@ -55,13 +61,17 @@ class Router
     protected function resolveControllerAction(array $action)
     {
         [$class, $method] = $action;
+
         if (!class_exists($class)) {
             throw new RouterNotFoundException();
         }
-        $class = new $class();
+
+        $class = $this->container->get($class);
+
         if (!method_exists($class, $method)) {
             throw new RouterNotFoundException();
         }
+
         return call_user_func_array([$class, $method], $action);
     }
 

@@ -11,11 +11,9 @@ use App\Helpers\Utils;
 readonly class FileRepository
 {
 
-    private QueryBuilder $queryBuilder;
 
-    public function __construct(DB $db)
+    public function __construct(private QueryBuilder $queryBuilder)
     {
-        $this->queryBuilder = new queryBuilder($db);
     }
 
     /**

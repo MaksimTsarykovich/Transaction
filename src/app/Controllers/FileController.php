@@ -6,14 +6,21 @@ namespace App\Controllers;
 
 use App\App;
 use App\Controller;
+use App\Database\DB;
 use App\Helpers\Utils;
 use App\Models\File;
 use App\View;
+use Doctrine\DBAL\DriverManager;
 
 class FileController extends Controller
 {
+
+    public function __construct(private DB $db) {
+    }
+
     public function index(): View
     {
+        var_dump($this->db);die;
         $file = new File(App::db());
         return View::make('index', ['files' => $file->getAll()]);
     }

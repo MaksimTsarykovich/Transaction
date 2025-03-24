@@ -8,10 +8,9 @@ readonly class CurrencyRepository extends DB
 {
     private QueryBuilder $queryBuilder;
 
-    public function __construct(DB $db)
+    public function __construct(DB $conn)
     {
-        parent::__construct($db);
-        $this->queryBuilder = new queryBuilder($db);
+        $this->queryBuilder = $conn->createQueryBuilder();
     }
 
     public function save(array $currency): void
