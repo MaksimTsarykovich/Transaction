@@ -6,10 +6,13 @@ use App\App;
 use App\Config;
 use App\Connection;
 use App\Controller;
+use App\Database\DB;
 use App\Router;
 use App\Controllers\FileController;
 use App\Controllers\TransactionController;
 use Doctrine\DBAL\DriverManager;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\ORMSetup;
 use Psr\Container\ContainerInterface;
 use function DI\get;
 
@@ -26,7 +29,18 @@ $containerBuilder = new DI\ContainerBuilder();
 $containerBuilder->addDefinitions([
     Config::class => function (ContainerInterface $c) {
         return new Config($_ENV);
-    }
+    },
+    DB::class => function (ContainerInterface $c) {
+        return new DB($c->get(Config::class));
+    },
+    EntityManager::class => function (ContainerInterface $c) {
+        $paths = [__DIR__ . '/src/Entity'];
+        $isDevMode = true;
+        $config = ORMSetup::createAttributeMetadataConfiguration($paths, $isDevMode);
+        $db = $c->get(DB::class);
+        $connection = $db->getConnection();
+    return new EntityManager($connection, $config);
+},
 ],
 );
 

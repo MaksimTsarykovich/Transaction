@@ -12,7 +12,7 @@ readonly class FileRepository
 {
 
 
-    public function __construct(private QueryBuilder $queryBuilder)
+    public function __construct(private DB $db)
     {
     }
 
@@ -27,15 +27,23 @@ readonly class FileRepository
 
     public function getAll(): array
     {
-        return $this->queryBuilder->selectAll('files');
+        return $this->db->queryBuilder
+            ->select('*')
+            ->from('files')
+            ->executeQuery()
+            ->fetchAllAssociative();
     }
 
     /**
      * @throws DatabaseDeleteException
      */
-    public function delete(int $id): void
+    public function delete(int $id)
     {
-        $this->queryBuilder->delete('files', ['id' => $id]);
+        return $this->db->queryBuilder
+            ->delete('files')
+            ->where('id = :id')
+            ->setParameter('id', $id)
+            ->executeStatement();
     }
 
     public function get(int $id)

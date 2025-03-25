@@ -7,25 +7,34 @@ namespace App\Controllers;
 use App\App;
 use App\Controller;
 use App\Database\DB;
-use App\Helpers\Utils;
-use App\Models\File;
+use App\Entities\File;
 use App\View;
-use Doctrine\DBAL\DriverManager;
+use Doctrine\ORM\EntityManager;
 
 class FileController extends Controller
 {
-    private DB $db;
 
-    public function __construct(DB $db) {
-        $this->db = $db;
-    }
+    public function __construct(
+        private DB $db,
+        private File $file,
+        private EntityManager $entityManager,
+    ) {}
 
     public function index(): View
     {
-        $result = $this->db->fetchAllAssociative('SELECT * FROM `files`');
-        var_dump($result);die;
-        $file = new File(App::db());
-        return View::make('index', ['files' => $file->getAll()]);
+        $file = new File();
+        $file->setName('file2');
+        $this->entityManager->persist($file);
+        $this->entityManager->flush();
+
+        $fileRepository = $this->entityManager->getRepository(File::class);
+        $file = $fileRepository->find(42);
+
+        var_dump($file);
+
+        return View::make('index', [
+            'files' => $this->file->getAll()
+        ]);
     }
 
     public function upload(): View
@@ -42,7 +51,7 @@ class FileController extends Controller
     public function delete(): View
     {
         try{
-            (new File(App::db()))->delete((int)$_GET['id'],$_GET['name']);
+            $this->file->delete((int)$_GET['id'],$_GET['name']);
             return $this->index();
         } catch (\Exception $e) {
             return $this->handleError($e);

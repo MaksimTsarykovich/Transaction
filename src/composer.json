@@ -11,6 +11,7 @@
         "psr/container": "^2.0",
         "doctrine/dbal": "^4.2",
         "doctrine/orm": "^3.3",
-        "php-di/php-di": "^7.0"
+        "php-di/php-di": "^7.0",
+        "symfony/cache": "^7.2"
     }
 }

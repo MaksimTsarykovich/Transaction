@@ -7,14 +7,18 @@ namespace App\Database;
 use App\Config;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
+use Doctrine\DBAL\Query\QueryBuilder;
 
-readonly class DB
+readonly class  DB
 {
     private Connection $connection;
+    public  QueryBuilder $queryBuilder;
 
     public function __construct(Config $config)
     {
         $this->connection = DriverManager::getConnection($config->db);
+        $createQueryBuilder=$this->connection->createQueryBuilder();
+        $this->queryBuilder = $createQueryBuilder;
     }
 
     public function getConnection(): Connection

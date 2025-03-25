@@ -14,12 +14,14 @@ readonly class File
 {
     protected array $file;
     protected string $filePath;
-    protected FileRepository $fileRepository;
 
-    public function __construct(DB $db, array $file = [])
+    public function __construct
+    (
+        private FileRepository $fileRepository,
+        array $file = []
+    )
     {
         $this->file = $file;
-        $this->fileRepository = new FileRepository($db);
     }
 
     public function exists(): bool

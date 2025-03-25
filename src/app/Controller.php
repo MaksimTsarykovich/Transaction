@@ -14,7 +14,6 @@ class  Controller
 
     public function __construct()
     {
-        $this->flash = new FlashMessage();
     }
 
     public function handleError(\Exception $exception): View

@@ -42,6 +42,8 @@
       <path value="$PROJECT_DIR$/src/vendor/laravel/serializable-closure" />
       <path value="$PROJECT_DIR$/src/vendor/php-di/invoker" />
       <path value="$PROJECT_DIR$/src/vendor/php-di/php-di" />
+      <path value="$PROJECT_DIR$/src/vendor/symfony/cache-contracts" />
+      <path value="$PROJECT_DIR$/src/vendor/symfony/cache" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="8.3">
