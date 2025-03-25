@@ -14,13 +14,17 @@ use Doctrine\DBAL\DriverManager;
 
 class FileController extends Controller
 {
+    private DB $db;
 
-    public function __construct(private DB $db) {
+    public function __construct(DB $db) {
+        $this->db = $db;
     }
 
     public function index(): View
     {
-        var_dump($this->db);die;
+        $connection = $this->db->getConnection();
+        $result = $connection->fetchAllAssociative('SELECT * FROM `transactions`');
+        var_dump($connection);die;
         $file = new File(App::db());
         return View::make('index', ['files' => $file->getAll()]);
     }

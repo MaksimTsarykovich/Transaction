@@ -9,14 +9,12 @@ use App\Database\DB;
 
 class App
 {
-    private static DB $db;
 
     public function __construct(
         protected Router $router,
         protected array $request,
         protected Config $config
     ) {
-        static::$db = new DB($config->db ?? []);
     }
 
     public static function db(): DB
