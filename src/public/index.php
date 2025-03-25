@@ -24,20 +24,9 @@ $dotenv->load();
 $containerBuilder = new DI\ContainerBuilder();
 
 $containerBuilder->addDefinitions([
-    Doctrine\DBAL\Connection::class => function (ContainerInterface $container) {
-        $connectionParameters = [
-            'host' => $_ENV['DB_HOST'],
-            'user' => $_ENV['DB_USER'],
-            'password' => $_ENV['DB_PASSWORD'],
-            'dbname' => $_ENV['DB_DATABASE'],
-            'driver' => $_ENV['DB_DRIVER'] ?? 'pdo_mysql',
-        ];
-        return DriverManager::getConnection($connectionParameters);
-    },
-
-    DB::class => function (ContainerInterface $container) {
-        return new DB($container->get(Doctrine\DBAL\Connection::class));
-    },
+    Config::class => function (ContainerInterface $c) {
+        return new Config($_ENV);
+    }
 ],
 );
 

@@ -22,9 +22,8 @@ class FileController extends Controller
 
     public function index(): View
     {
-        $connection = $this->db->getConnection();
-        $result = $connection->fetchAllAssociative('SELECT * FROM `transactions`');
-        var_dump($connection);die;
+        $result = $this->db->fetchAllAssociative('SELECT * FROM `files`');
+        var_dump($result);die;
         $file = new File(App::db());
         return View::make('index', ['files' => $file->getAll()]);
     }

@@ -9,6 +9,7 @@ use App\Database\DB;
 
 class App
 {
+    private static DB $db;
 
     public function __construct(
         protected Router $router,
@@ -21,6 +22,7 @@ class App
     {
         return static::$db;
     }
+
 
     public function run(): void
     {
