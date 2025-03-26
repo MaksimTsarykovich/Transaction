@@ -4,7 +4,7 @@ services:
     container_name: transaction-php
     restart: always
     volumes:
-      - ../src:/var/www/html
+      - ../:/var/www/html
     ports:
       - "9000:9000"
     networks:
@@ -16,7 +16,7 @@ services:
     ports:
       - "8000:80"
     volumes:
-      - ../src:/var/www/html
+      - ../:/var/www/html
       - ./nginx:/etc/nginx/conf.d
     depends_on:
       - php
