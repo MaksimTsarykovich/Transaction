@@ -4,7 +4,8 @@
       "Core\\": "src/Core/",
       "src\\": "src/",
       "Infrastructure\\": "src/Infrastructure/",
-      "Entities\\": "src/Domain/Entities/"
+      "Entities\\": "src/Domain/Entities/",
+      "Attributes\\": "src/Attributes/"
     }
   },
   "require": {

@@ -1,19 +1,38 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Core;
 
 use src\Exceptions\RouterNotFoundException;
+use src\Attributes\Route;
+
 
 class Router
 {
-    private array $routes;
+    private array $routes = [];
     private $container;
 
     public function __construct($container)
     {
         $this->container = $container;
+    }
+
+    public function registerRoutesFromControllerAttributes(array $controllers): void
+    {
+        foreach ($controllers as $controller) {
+            $reflectionController = new \ReflectionClass($controller);
+            foreach ($reflectionController->getMethods() as $method) {
+
+                $attributes = $method->getAttributes(Route::class);
+
+                foreach ($attributes as $attribute) {
+                    $route = $attribute->newInstance();
+
+                    $this->register($route->method, $route->routePath, [$controller, $method->getName()]);
+                }
+            }
+        }
     }
 
     public function register(string $requestMethod, string $route, callable|array $action): self
@@ -31,6 +50,11 @@ class Router
     public function post(string $route, callable|array $action)
     {
         return $this->register('post', $route, $action);
+    }
+
+    public function routes(): array
+    {
+        return $this->routes;
     }
 
     public function resolve(string $requestUri, string $requestMethod)

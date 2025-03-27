@@ -2,17 +2,24 @@
 
 namespace src\Repository;
 
-use Infrastructure\Database\DB;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityRepository;
+use Entities\File;
 use src\Exceptions\DatabaseCompareRowException;
 use src\Exceptions\DatabaseDeleteException;
 use src\Exceptions\DatabaseInsertException;
+use src\Infrastructure\Database\DB;
 
-readonly class FileRepository
+class FileRepository extends EntityRepository
 {
+    private $fileRepository;
 
-
-    public function __construct(private DB $db)
+    public function __construct(
+        private DB $db,
+        private EntityManager $entityManager,
+    )
     {
+        $this->fileRepository = $this->entityManager->getRepository(File::class);
     }
 
     /**
@@ -31,6 +38,11 @@ readonly class FileRepository
             ->from('files')
             ->executeQuery()
             ->fetchAllAssociative();
+    }
+
+    public function findAll(): array
+    {
+        return $this->fileRepository->findAll();
     }
 
     /**

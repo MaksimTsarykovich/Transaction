@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Файлы</title>
-    <link rel="stylesheet" href="/assets/ccs/bootstrap/bootstrap.min.css">
-    <link rel="stylesheet" href="/assets/ccs/main.css">
+    <link rel="stylesheet" href="/public/assets/css/bootstrap/bootstrap.min.css">
+    <link rel="stylesheet" href="/public/assets/css/main.css">
 </head>
 <body>
 <div class="container mt-5">
@@ -25,10 +25,10 @@
                 <div class="card">
                     <div class="card-body">
                         <h5 class="card-title">Файл</h5>
-                        <p class="card-text">Имя файла: <strong><?= $file['name'] ?></strong></p>
+                        <p class="card-text">Имя файла: <strong><?= $file->getName(); ?></strong></p>
                         <div class="d-grid gap-2">
-                            <a href="/transactions?id=<?= $file['id'] ?>" class="btn btn-primary">Перейти к файлу</a>
-                            <a href="/delete?id=<?= $file['id'] ?>&name=<?= $file['name'] ?>" class="btn btn-danger">
+                            <a href="/transactions?id=<?= $file->getId(); ?>" class="btn btn-primary">Перейти к файлу</a>
+                            <a href="/delete?id=<?= $file->getId(); ?>&name=<?= $file->getName(); ?>" class="btn btn-danger">
                                 Удалить
                             </a>
                         </div>
@@ -40,7 +40,7 @@
 </div>
 
 <!-- Подключаем Bootstrap JS -->
-<script src="/assets/ccs/bootstrap/bootstrap.bundle.min.js"></script>
+<script src="/public/assets/js/bootstrap/bootstrap.bundle.min.js"></script>
 
 <script>
     function deleteFile(filename) {

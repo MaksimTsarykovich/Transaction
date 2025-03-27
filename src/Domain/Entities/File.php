@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace Entities;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\Entity;
 
 #[ORM\Entity]
 #[ORM\Table(name: 'files')]

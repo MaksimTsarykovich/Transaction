@@ -44,15 +44,12 @@ $containerBuilder->addDefinitions([
 $container = $containerBuilder->build();
 
 $router = new Router($container);
-
-$router
-    ->get('/', [FileController::class, 'index'])
-    ->get('/transactions', [TransactionController::class, 'transactions'])
-    ->get('/error', [AbstractController::class, 'error'])
-    ->get('/form-upload', [FileController::class, 'formUpload'])
-    ->post('/upload', [FileController::class, 'upload'])
-    ->get('/delete', [FileController::class, 'delete']);
-
+$router->registerRoutesFromControllerAttributes(
+    [
+        FileController::class,
+        TransactionController::class,
+    ]
+);
 
 (new App(
     $router,

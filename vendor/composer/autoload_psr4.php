@@ -40,4 +40,5 @@ return array(
     'Doctrine\\Common\\' => array($vendorDir . '/doctrine/event-manager/src'),
     'DI\\' => array($vendorDir . '/php-di/php-di/src'),
     'Core\\' => array($baseDir . '/src/Core'),
+    'Attributes\\' => array($baseDir . '/src/Attributes'),
 );
