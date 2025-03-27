@@ -9,12 +9,19 @@ use Core\App;
 use Core\View;
 use Domain\Services\csv\TransactionProcessor;
 use Infrastructure\FileSystem\CsvFile;
+use src\Attributes\Get;
+use src\Repository\FileRepository;
 
 
 class TransactionController extends AbstractController
 {
+    #[Get('/transaction')]
     public function transactions(): View
     {
+        $this->fileRepository = new FileRepository();
+        $this->fileRepository->getFileById();
+
+
         $csvFile = new CsvFile(App::db(),STORAGE_PATH . '/transactions_sample.csv');
         $transactionProcessor = new TransactionProcessor($csvFile, App::db());
 

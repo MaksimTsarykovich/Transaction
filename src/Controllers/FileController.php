@@ -9,7 +9,8 @@ use Doctrine\ORM\EntityManager;
 use Entities\File;
 use Infrastructure\Http\Request;
 use Infrastructure\Http\Response;
-use src\Attributes\Route;
+use src\Attributes\Get;
+use src\Attributes\Post;
 use src\Infrastructure\Database\DB;
 use src\Repository\FileRepository;
 
@@ -27,7 +28,7 @@ class FileController extends AbstractController
         parent::__construct();
     }
 
-    #[Route('/')]
+    #[Get('/')]
     public function index(): View
     {
         return View::make('index', [
@@ -35,7 +36,7 @@ class FileController extends AbstractController
         ]);
     }
 
-    #[Route('/upload')]
+    #[Post('/upload')]
     public function upload(): View
     {
         try {
@@ -50,6 +51,7 @@ class FileController extends AbstractController
         }
     }
 
+
     public function delete(): View
     {
         try {
@@ -60,7 +62,7 @@ class FileController extends AbstractController
         }
     }
 
-    #[Route('/form-upload')]
+    #[Get('/form-upload')]
     public function formUpload(): View
     {
         return View::make('form-upload');
